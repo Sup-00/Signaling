@@ -7,15 +7,13 @@ public class CharectorMoving : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
 
-    private Transform _transform;
     private Rigidbody2D _rigidbody2D;
     private Animator _animator;
     private SpriteRenderer _spriteRenderer;
-    private bool _isGrounded;
+    private bool _isStayOnFeet;
 
     private void Start()
     {
-        _transform = gameObject.GetComponent<Transform>();
         _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
         _animator = gameObject.GetComponent<Animator>();
         _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
@@ -26,19 +24,21 @@ public class CharectorMoving : MonoBehaviour
         if (Input.GetKey(KeyCode.A))
         {
             _spriteRenderer.flipX = true;
+            ActivateAnimation("Run");
             Move(-_speed);
         }
         else if (Input.GetKey(KeyCode.D))
         {
             _spriteRenderer.flipX = false;
+            ActivateAnimation("Run");
             Move(_speed);
         }
         else
         {
-            _animator.SetTrigger("Idle");
+            ActivateAnimation("Idle");
         }
 
-        if (_isGrounded && Input.GetKeyDown(KeyCode.Space))
+        if (_isStayOnFeet && Input.GetKeyDown(KeyCode.Space))
         {
             Jump();
         }
@@ -46,18 +46,22 @@ public class CharectorMoving : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        _isGrounded = true;
+        _isStayOnFeet = true;
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        _isGrounded = false;
+        _isStayOnFeet = false;
     }
 
     private void Move(float MoveDirection)
     {
-        _transform.Translate(MoveDirection * Time.deltaTime, 0, 0);
-        _animator.SetTrigger("Run");
+        transform.Translate(MoveDirection * Time.deltaTime, 0, 0);
+    }
+
+    private void ActivateAnimation(string AnimationName)
+    {
+        _animator.SetTrigger(AnimationName);
     }
 
     private void Jump()

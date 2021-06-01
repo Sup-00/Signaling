@@ -1,76 +1,86 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using System.Collections;
 
 public class EnemyAlarm : MonoBehaviour
 {
     [SerializeField] private AudioSource _audioSource;
+    [SerializeField] private GameObject _alarmBox;
     [SerializeField] [Range(0f, 1f)] private float _maxVolume;
     [SerializeField] [Range(0f, 0.1f)] private float _runTime;
 
     private bool _isPlayerEnter;
     private Animator _enemyAnimator;
-    private GameObject _alarmBox;
 
-    void Start()
+    private void Start()
     {
         _isPlayerEnter = false;
         _enemyAnimator = gameObject.GetComponent<Animator>();
-        _alarmBox = GameObject.FindGameObjectWithTag("AlarmBox");
     }
 
-    void Update()
+    private void Update()
     {
-        if (_isPlayerEnter)
-        {
-            PlayAlarm();
-        }
-        else
-        {
-            StopAlarm();
-        }
+
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         _isPlayerEnter = true;
+        StartCoroutine(PlayAlarm());
     }
 
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         _isPlayerEnter = false;
+        StartCoroutine(StopAlarm());
     }
 
-    private void PlayAlarm()
+    private IEnumerator PlayAlarm()
     {
-        IsPlaying(_audioSource.isPlaying);
+        SetAnimation("Alarm", true);
 
-        if (_audioSource.volume < 0.5f)
+        while (_isPlayerEnter)
         {
-            _audioSource.volume += ChangeVolume();
+            if (_isPlayerEnter == false)
+                break;
+
+            CheckAudioForActive(_audioSource.isPlaying);
+
+            if (_audioSource.volume < _maxVolume)
+                _audioSource.volume += ChangeVolume();
+
+            yield return null;
         }
-
-        _enemyAnimator.SetTrigger("Alarm");
-        _alarmBox.active = true;
     }
 
-    private void StopAlarm()
+    private IEnumerator StopAlarm()
     {
-        if (_audioSource.volume > 0f)
+        while (_audioSource.volume > 0.0f)
         {
-            IsPlaying(_audioSource.isPlaying);
+            if (_isPlayerEnter)
+                break;
+
+            CheckAudioForActive(_audioSource.isPlaying);
             _audioSource.volume -= ChangeVolume();
+
+            yield return null;
         }
-        else
+
+        if (_isPlayerEnter == false)
         {
+            SetAnimation("Idle", false);
             _audioSource.Stop();
-            _enemyAnimator.SetTrigger("Idle");
-            _alarmBox.active = false;
         }
+
     }
 
-    private void IsPlaying(bool isPlay)
+    private void SetAnimation(string Trigger, bool IsActive)
+    {
+        _enemyAnimator.SetTrigger(Trigger);
+        _alarmBox.active = IsActive;
+    }
+
+    private void CheckAudioForActive(bool isPlay)
     {
         if (isPlay == false)
         {
