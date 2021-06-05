@@ -8,34 +8,27 @@ public class CharectorMoving : MonoBehaviour
     [SerializeField] private float _jumpForce;
 
     private Rigidbody2D _rigidbody2D;
-    private Animator _animator;
     private SpriteRenderer _spriteRenderer;
     private bool _isStayOnFeet;
 
     private void Start()
     {
-        _rigidbody2D = gameObject.GetComponent<Rigidbody2D>();
-        _animator = gameObject.GetComponent<Animator>();
-        _spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetAxis("Horizontal") < 0 )
         {
             _spriteRenderer.flipX = true;
-            ActivateAnimation("Run");
             Move(-_speed);
         }
-        else if (Input.GetKey(KeyCode.D))
+        else if (Input.GetAxis("Horizontal") > 0)
         {
             _spriteRenderer.flipX = false;
-            ActivateAnimation("Run");
+            
             Move(_speed);
-        }
-        else
-        {
-            ActivateAnimation("Idle");
         }
 
         if (_isStayOnFeet && Input.GetKeyDown(KeyCode.Space))
@@ -57,11 +50,6 @@ public class CharectorMoving : MonoBehaviour
     private void Move(float MoveDirection)
     {
         transform.Translate(MoveDirection * Time.deltaTime, 0, 0);
-    }
-
-    private void ActivateAnimation(string AnimationName)
-    {
-        _animator.SetTrigger(AnimationName);
     }
 
     private void Jump()
