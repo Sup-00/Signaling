@@ -64,7 +64,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\CharectorAnimation.cs" />
     <Compile Include="Assets\Scripts\CharectorMoving.cs" />
     <Compile Include="Assets\Scripts\WardenAlarm.cs" />
     <Reference Include="UnityEngine">

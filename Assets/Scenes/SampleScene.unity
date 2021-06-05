@@ -2125,7 +2125,6 @@ GameObject:
   - component: {fileID: 1141191402}
   - component: {fileID: 1141191401}
   - component: {fileID: 1141191405}
-  - component: {fileID: 1141191404}
   - component: {fileID: 1141191406}
   - component: {fileID: 1141191407}
   m_Layer: 0
@@ -2221,18 +2220,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1141191404
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1141191400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 28c3ba2c365848345b131847b60d1ce4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!61 &1141191405
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -2274,7 +2261,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 0
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2369,9 +2356,80 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audioSource: {fileID: 1141191406}
-  _alarmBox: {fileID: 836597944}
   _volumeChangeRate: 0.0005
   _maxVolume: 0.5
+  _playAlarm:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1141191406}
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1141191401}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Alarm
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 836597944}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  _stopAlarm:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1141191406}
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1141191401}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Idle
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 836597944}
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1528183036
 GameObject:
   m_ObjectHideFlags: 0
@@ -3360,7 +3418,6 @@ GameObject:
   - component: {fileID: 1719912084}
   - component: {fileID: 1719912085}
   - component: {fileID: 1719912087}
-  - component: {fileID: 1719912086}
   m_Layer: 0
   m_Name: Charector
   m_TagString: Untagged
@@ -3499,18 +3556,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 4
---- !u!114 &1719912086
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1719912080}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d136601f70e780b489117d56df9a1fa7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1719912087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3525,6 +3570,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 1
   _jumpForce: 170
+  _moveEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1719912082}
+        m_MethodName: set_flipX
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1719912081}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Run
+          m_BoolArgument: 0
+        m_CallState: 2
+  _idleEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1719912081}
+        m_MethodName: SetTrigger
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Idle
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1747237901
 GameObject:
   m_ObjectHideFlags: 0

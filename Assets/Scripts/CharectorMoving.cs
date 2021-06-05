@@ -1,34 +1,38 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CharectorMoving : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
+    [SerializeField] private MoveEvent _moveEvent;
+    [SerializeField] private UnityEvent _idleEvent;
 
     private Rigidbody2D _rigidbody2D;
-    private SpriteRenderer _spriteRenderer;
     private bool _isStayOnFeet;
 
     private void Start()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
-        _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
         if (Input.GetAxis("Horizontal") < 0 )
         {
-            _spriteRenderer.flipX = true;
+            _moveEvent.Invoke(true);
             Move(-_speed);
         }
         else if (Input.GetAxis("Horizontal") > 0)
         {
-            _spriteRenderer.flipX = false;
-            
+            _moveEvent.Invoke(false);
             Move(_speed);
+        }
+        else
+        {
+            _idleEvent.Invoke();
         }
 
         if (_isStayOnFeet && Input.GetKeyDown(KeyCode.Space))
@@ -57,3 +61,6 @@ public class CharectorMoving : MonoBehaviour
         _rigidbody2D.AddForce(Vector2.up * _jumpForce);
     }
 }
+
+[System.Serializable]
+public class MoveEvent : UnityEvent<bool> { }

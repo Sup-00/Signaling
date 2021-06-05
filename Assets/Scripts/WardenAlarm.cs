@@ -1,20 +1,20 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 using System.Collections;
 
 public class WardenAlarm : MonoBehaviour
 {
     [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private GameObject _alarmBox;
     [SerializeField] private float _volumeChangeRate;
     [SerializeField] [Range(0f, 1f)] private float _maxVolume;
+    [SerializeField] private UnityEvent _playAlarm;
+    [SerializeField] private UnityEvent _stopAlarm;
 
     private bool _isPlayerEnter;
-    private Animator _enemyAnimator;
 
     private void Start()
     {
         _isPlayerEnter = false;
-        _enemyAnimator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -32,15 +32,10 @@ public class WardenAlarm : MonoBehaviour
 
     private IEnumerator PlayAlarm()
     {
-        SetAnimation("Alarm", true);
+        _playAlarm.Invoke();
 
         while (_isPlayerEnter)
         {
-            if (_isPlayerEnter == false)
-                break;
-
-            CheckAudioForActive(_audioSource.isPlaying);
-
             if (_audioSource.volume < _maxVolume)
                 _audioSource.volume += ChangeVolume();
 
@@ -55,7 +50,6 @@ public class WardenAlarm : MonoBehaviour
             if (_isPlayerEnter)
                 break;
 
-            CheckAudioForActive(_audioSource.isPlaying);
             _audioSource.volume -= ChangeVolume();
 
             yield return null;
@@ -63,24 +57,9 @@ public class WardenAlarm : MonoBehaviour
 
         if (_isPlayerEnter == false)
         {
-            SetAnimation("Idle", false);
-            _audioSource.Stop();
+            _stopAlarm.Invoke();
         }
 
-    }
-
-    private void SetAnimation(string Trigger, bool IsActive)
-    {
-        _enemyAnimator.SetTrigger(Trigger);
-        _alarmBox.active = IsActive;
-    }
-
-    private void CheckAudioForActive(bool isPlay)
-    {
-        if (isPlay == false)
-        {
-            _audioSource.Play();
-        }
     }
 
     private float ChangeVolume()
