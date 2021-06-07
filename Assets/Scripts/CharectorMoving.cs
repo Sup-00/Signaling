@@ -7,8 +7,8 @@ public class CharectorMoving : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _jumpForce;
-    [SerializeField] private MoveEvent _moveEvent;
-    [SerializeField] private UnityEvent _idleEvent;
+    [SerializeField] private MoveEvent _charectorMoving;
+    [SerializeField] private UnityEvent _charectorIdle;
 
     private Rigidbody2D _rigidbody2D;
     private bool _isStayOnFeet;
@@ -22,17 +22,17 @@ public class CharectorMoving : MonoBehaviour
     {
         if (Input.GetAxis("Horizontal") < 0 )
         {
-            _moveEvent.Invoke(true);
+            _charectorMoving.Invoke(true);
             Move(-_speed);
         }
         else if (Input.GetAxis("Horizontal") > 0)
         {
-            _moveEvent.Invoke(false);
+            _charectorMoving.Invoke(false);
             Move(_speed);
         }
         else
         {
-            _idleEvent.Invoke();
+            _charectorIdle.Invoke();
         }
 
         if (_isStayOnFeet && Input.GetKeyDown(KeyCode.Space))

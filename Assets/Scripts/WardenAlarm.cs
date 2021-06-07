@@ -20,50 +20,52 @@ public class WardenAlarm : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         _isPlayerEnter = true;
-        StartCoroutine(PlayAlarm());
+        StopCoroutine(StopAlarm(_audioSource.volume, _stopAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
+        StartCoroutine(PlayAlarm(_audioSource.volume, _playAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
     }
 
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         _isPlayerEnter = false;
-        StartCoroutine(StopAlarm());
+        StopCoroutine(PlayAlarm(_audioSource.volume, _playAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
+        StartCoroutine(StopAlarm(_audioSource.volume, _stopAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
     }
 
-    private IEnumerator PlayAlarm()
+    private IEnumerator PlayAlarm(float volume, UnityEvent playAlarm, float maxVolume, float volumeChangeRate, bool isPlayerEnter)
     {
-        _playAlarm.Invoke();
+        playAlarm.Invoke();
 
-        while (_isPlayerEnter)
+        while (isPlayerEnter)
         {
-            if (_audioSource.volume < _maxVolume)
-                _audioSource.volume += ChangeVolume();
+            if (volume < maxVolume)
+                volume += ChangeVolume(maxVolume, volumeChangeRate);
 
             yield return null;
         }
     }
 
-    private IEnumerator StopAlarm()
+    private IEnumerator StopAlarm(float volume, UnityEvent stopAlarm, float maxVolume, float volumeChangeRate, bool isPlayerEnter)
     {
-        while (_audioSource.volume > 0.0f)
+        while (volume > 0.0f)
         {
-            if (_isPlayerEnter)
+            if (isPlayerEnter)
                 break;
 
-            _audioSource.volume -= ChangeVolume();
+            volume -= ChangeVolume(maxVolume, volumeChangeRate);
 
             yield return null;
         }
 
-        if (_isPlayerEnter == false)
+        if (isPlayerEnter == false)
         {
-            _stopAlarm.Invoke();
+            stopAlarm.Invoke();
         }
 
     }
 
-    private float ChangeVolume()
+    private float ChangeVolume(float maxVolume, float volumeChangeRate)
     {
-        return Mathf.MoveTowards(0, _maxVolume, _volumeChangeRate);
+        return Mathf.MoveTowards(0, maxVolume, volumeChangeRate);
     }
 }
