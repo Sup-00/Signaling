@@ -11,6 +11,7 @@ public class WardenAlarm : MonoBehaviour
     [SerializeField] private UnityEvent _stopAlarm;
 
     private bool _isPlayerEnter;
+    private Coroutine _currentCorutine;
 
     private void Start()
     {
@@ -20,39 +21,44 @@ public class WardenAlarm : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         _isPlayerEnter = true;
-        StopCoroutine(StopAlarm(_audioSource.volume, _stopAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
-        StartCoroutine(PlayAlarm(_audioSource.volume, _playAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
+        StopActiveCorutine(_currentCorutine);
+        _currentCorutine = StartCoroutine(PlayAlarm(_playAlarm, _isPlayerEnter));
     }
-
 
     private void OnTriggerExit2D(Collider2D collision)
     {
         _isPlayerEnter = false;
-        StopCoroutine(PlayAlarm(_audioSource.volume, _playAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
-        StartCoroutine(StopAlarm(_audioSource.volume, _stopAlarm, _maxVolume, _volumeChangeRate, _isPlayerEnter));
+        StopActiveCorutine(_currentCorutine);
+        _currentCorutine = StartCoroutine(StopAlarm(_stopAlarm, _isPlayerEnter));
     }
 
-    private IEnumerator PlayAlarm(float volume, UnityEvent playAlarm, float maxVolume, float volumeChangeRate, bool isPlayerEnter)
+    private void StopActiveCorutine(Coroutine corutine)
+    {
+        if (_currentCorutine != null)
+            StopCoroutine(corutine);
+    }
+
+    private IEnumerator PlayAlarm(UnityEvent playAlarm, bool isPlayerEnter)
     {
         playAlarm.Invoke();
 
         while (isPlayerEnter)
         {
-            if (volume < maxVolume)
-                volume += ChangeVolume(maxVolume, volumeChangeRate);
+            if (_audioSource.volume < _maxVolume)
+                _audioSource.volume += ChangeVolume();
 
             yield return null;
         }
     }
 
-    private IEnumerator StopAlarm(float volume, UnityEvent stopAlarm, float maxVolume, float volumeChangeRate, bool isPlayerEnter)
+    private IEnumerator StopAlarm(UnityEvent stopAlarm, bool isPlayerEnter)
     {
-        while (volume > 0.0f)
+        while (_audioSource.volume > 0.0f)
         {
             if (isPlayerEnter)
                 break;
 
-            volume -= ChangeVolume(maxVolume, volumeChangeRate);
+            _audioSource.volume -= ChangeVolume();
 
             yield return null;
         }
@@ -64,8 +70,8 @@ public class WardenAlarm : MonoBehaviour
 
     }
 
-    private float ChangeVolume(float maxVolume, float volumeChangeRate)
+    private float ChangeVolume()
     {
-        return Mathf.MoveTowards(0, maxVolume, volumeChangeRate);
+        return Mathf.MoveTowards(0, _maxVolume, _volumeChangeRate);
     }
 }
