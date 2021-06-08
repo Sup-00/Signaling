@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(Rigidbody2D))] 
 public class CharectorMoving : MonoBehaviour
 {
     [SerializeField] private float _speed;
